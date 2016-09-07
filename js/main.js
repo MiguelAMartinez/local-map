@@ -1,4 +1,4 @@
-/* This interactive neighborhood map uses JS Knockout, Google maps API, and a third party API 
+/* This interactive neighborhood map that uses JS Knockout, Google maps API, and a third party API 
 to show my favorite restaurants in Austin
 References used: Stack Overflow, Mozilla Developer Network, and W3Schools */
 
