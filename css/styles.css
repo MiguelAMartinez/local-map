@@ -1,0 +1,75 @@
+html,
+body {
+  font-family: Arial, sans-serif;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h1,
+h2, 
+h3 {
+	color: #4d4d4d;
+}
+
+hr {
+	border: none;
+	border-top: 3px dotted #666;
+	margin: 0 0 0;
+	color: #fff;
+	background-color: #fff;
+	height: 1px;
+	width: 50%;
+	margin: auto;
+}
+
+#map {
+	bottom:0px;
+	height: 100%;
+	left: 30%;
+	position: absolute;
+	right: 0;
+}
+
+.menu {
+	height: 100%;
+	width: 30%;
+	text-align: center;
+}
+
+#mealList,
+#placeList {
+	list-style-type: none;
+	padding: 0;
+	margin: auto;
+}
+
+.mealType, 
+.placeName {
+	margin: 12px 2px;
+	cursor: pointer;
+}
+
+.title-infoW{
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0;
+	padding: 0;
+}
+
+.sub-infoW {
+	margin: 0;
+	font-size: 16px;
+}
+
+.img-container {
+	width: 250px;
+	height: 250px;
+}
+
+.images {
+	max-width: 100%;
+}
+
+
