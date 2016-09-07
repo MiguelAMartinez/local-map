@@ -66,7 +66,7 @@ var currentIW;
 var defaultIcon;
 var overIcon;
 var map;
-var flickrURL = "http://api.flickr.com/services/feeds/photos_public.gne?api_key=6eef62d5866a7d26241929bb8fd3fd46&jsoncallback=?";
+var flickrURL = "https://api.flickr.com/services/feeds/photos_public.gne?api_key=6eef62d5866a7d26241929bb8fd3fd46&jsoncallback=?";
 
 /*Make the first iteration of the Google map*/
 function initMap() {
