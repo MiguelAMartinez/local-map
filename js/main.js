@@ -269,13 +269,16 @@ function updateViewList(self) {
 	self.placeList.removeAll(); 
 	modelPlaces.forEach(function(place){
 		if (place.meals[0] === selectedMeals[0]) {
-			place.marker.setVisible(true);
+			place.marker.setMap(map);
+			self.placeList.push( new constrPlace(place) );
 		} else if (place.meals[1] === selectedMeals[1]) {
-			place.marker.setVisible(true);
+			place.marker.setMap(map);
+			self.placeList.push( new constrPlace(place) );
 		} else if (place.meals[2] === selectedMeals[2]) {
-			place.marker.setVisible(true);
+			place.marker.setMap(map);
+			self.placeList.push( new constrPlace(place) );
 		} else {
-			place.marker.setVisible(false);			
+			place.marker.setMap(null);
 		}
 	});
 }
