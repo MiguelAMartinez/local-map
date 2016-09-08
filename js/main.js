@@ -2,6 +2,9 @@
 to show my favorite restaurants in Austin
 References used: Stack Overflow, Mozilla Developer Network, and W3Schools */
 
+/*Apply strict mode to document*/
+'use strict';
+
 /*Model section: the data*/
 var modelPlaces = [
 	{
@@ -61,17 +64,21 @@ var modelMeals = [
 ];
 
 /*Define important variables*/
-var selectedMeals = ['Breakfast','Lunch','Dinner'];
-var currentIW;
-var defaultIcon;
-var overIcon;
-var map;
-var flickrURL = "https://api.flickr.com/services/feeds/photos_public.gne?api_key=6eef62d5866a7d26241929bb8fd3fd46&jsoncallback=?";
-
+var selectedMeals = ['Breakfast','Lunch','Dinner'],
+	i,
+	aplaceName,
+    currentIW,
+    newIWContent,
+    defaultIcon,
+    overIcon,
+    map,
+    flickrURL = "https://api.flickr.com/services/feeds/photos_public.gne?api_key=6eef62d5866a7d26241929bb8fd3fd46&jsoncallback=?";
+    // flickrURL = "https://api.flickr.com/services/feeds/photos_public.gne?api_key=6eef62d5866a7d26241929bb8fd3fd46";
+    // flickrURL = "https://api.flickr.com/services/feeds/photos_public.gne?api_key=jo";
 /*Make the first iteration of the Google map*/
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
-		center: {lat: 30.267153, lng: -97.74306079999999},
+		center: {lat: 30.274063, lng: -97.763855},
 		zoom: 13
 	});
 
@@ -80,7 +87,7 @@ function initMap() {
 
 	var geocoder = new google.maps.Geocoder();
 	var largeInfowindow = new google.maps.InfoWindow();
-	var markers = [];
+
 	/*Create markers*/
 	modelPlaces.forEach(function(place){
 		geocoder.geocode(
@@ -93,10 +100,14 @@ function initMap() {
 			            title: place.name,
 			            position: results[0].geometry.location
 			        });
-			        /*Infowindow opens when a marker is clicked*/
+
+			        /*When you click on a marker, it changes color, and the
+			        map zooms and centers on it*/
 	    			place.marker.addListener('click', function() {
-	        			ViewInfoWindow(place, largeInfowindow);
+	        			newInfoWindow(place, largeInfowindow);
 	        			this.setIcon(overIcon);
+	        			map.setZoom(14);
+			        	map.setCenter(this.getPosition());
 	    			});
 		    	} else {
 		        	alert("Geocode was not successful for the following reason: " + status);
@@ -104,6 +115,7 @@ function initMap() {
 	        }
 	    );   
 	});
+	// map.setCenter(new google.maps.LatLng(37.4419, -122.1419));	
 }
 
 /*The meal filter and restaurant places constructors*/ 
@@ -137,27 +149,25 @@ function ViewModel() {
 
 	this.mealFilter = function(meal) {
 		if (meal.filterText() === '[X]') {
-			var index = selectedMeals.indexOf(meal.mealName());
-			selectedMeals[index] = 'no' + meal.mealName();
+			i = selectedMeals.indexOf(meal.mealName());
+			selectedMeals[i] = 'no' + meal.mealName();
 			meal.filterText('[ ]');		
 		} else {
 			meal.filterText('[X]');
-			var index = selectedMeals.indexOf('no' + meal.mealName());
-			selectedMeals[index] = meal.mealName();
+			i = selectedMeals.indexOf('no' + meal.mealName());
+			selectedMeals[i] = meal.mealName();
 		}
 		updateViewList(self);
 	};	
 
 	this.listClick = function(aplace) {
-		var nameaplace = aplace.placeName();
+		aplaceName = aplace.placeName();
 		for (i = 0; i < modelPlaces.length; i++) {
-			if (modelPlaces[i].name == nameaplace) {
-				var largeInfowindow = new google.maps.InfoWindow();
-				ViewInfoWindow(modelPlaces[i], largeInfowindow);
-				modelPlaces[i].marker.setIcon(overIcon);
+			if (modelPlaces[i].name === aplaceName) {
+				google.maps.event.trigger(modelPlaces[i].marker, 'click');
 			}
 		}
-	}
+	};
 }
 
 /*Change color of markers*/
@@ -175,7 +185,7 @@ function makeMarkerIcon(markerColor) {
 
 /*Create new infowindow and clear previous ones
 Use Flickr API to get images about each food place*/
-function ViewInfoWindow(place, infowindow) {
+function newInfoWindow(place, infowindow) {
 	modelPlaces.forEach(function(place){
 		place.marker.setIcon(defaultIcon);
 	});
@@ -185,6 +195,8 @@ function ViewInfoWindow(place, infowindow) {
 	}
 
 	/*Message in case API request fails*/
+
+	// Option 1
 	var flickrRequestTimeout = setTimeout(function() {
     	$(".images").text("Failed to get Flickr Images");
 	}, 8000);
@@ -203,11 +215,46 @@ function ViewInfoWindow(place, infowindow) {
 			clearTimeout(flickrRequestTimeout);
 	});
 
-	if (infowindow.marker != place.marker) {
+	// Option 2
+	// $.ajax({
+	// 		type: "GET",
+	// 		url: flickrURL,
+	// 		tags: place.name,
+	// 		dataType: "jsonp",
+	// 		tagmode: "any",
+	// 		format: "json"
+	// }).done(function( data ) {
+	// 	$.each( data.items, function( i, item ) {
+	// 		$( "<img>" ).attr( "src", item.media.m ).appendTo( ".images" );
+	// 		if ( i === 12 ) {
+	// 		  return false;
+	// 		}
+	// 	});
+	// }).fail(function () {
+ //    	$(".images").text("Failed to get Flickr Images");
+	// });
 
+	// Option3
+	// $.getJSON( flickrURL, {
+	// 		tags: place.name,
+	// 		tagmode: "any",
+	// 		format: "json"
+	// }).done(function( data ) {
+	// 	$.each( data.items, function( i, item ) {
+	// 		$( "<img>" ).attr( "src", item.media.m ).appendTo( ".images" );
+	// 		if ( i === 12 ) {
+	// 		  return false;
+	// 		}
+	// 	});
+	// }).fail(function () {
+ //    	$(".images").text("Failed to get Flickr Images");
+ //    	console.log('fail');
+	// });
+
+	if (infowindow.marker != place.marker) {
 		infowindow.marker = place.marker;
-		var newcontent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><div class="img-container"><div class="images"></div></div>';
-		infowindow.setContent(newcontent);
+		newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><div class="img-container"><div class="images"></div></div>';
+		infowindow.setContent(newIWContent);
 		currentIW = infowindow;
 		infowindow.open(map, place.marker);
 		infowindow.addListener('closeclick',function(){
@@ -222,19 +269,15 @@ function updateViewList(self) {
 	self.placeList.removeAll(); 
 	modelPlaces.forEach(function(place){
 		if (place.meals[0] === selectedMeals[0]) {
-			place.marker.setMap(map);
-			self.placeList.push( new constrPlace(place) );
+			place.marker.setVisible(true);
 		} else if (place.meals[1] === selectedMeals[1]) {
-			place.marker.setMap(map);
-			self.placeList.push( new constrPlace(place) );
+			place.marker.setVisible(true);
 		} else if (place.meals[2] === selectedMeals[2]) {
-			place.marker.setMap(map);
-			self.placeList.push( new constrPlace(place) );
+			place.marker.setVisible(true);
 		} else {
-			place.marker.setMap(null);			
+			place.marker.setVisible(false);			
 		}
 	});
 }
 
-
-ko.applyBindings(new ViewModel())
+ko.applyBindings(new ViewModel());
