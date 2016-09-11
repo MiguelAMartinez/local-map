@@ -1,6 +1,6 @@
 html,
 body {
-  font-family: Arial, sans-serif;
+  font-family: arial, sans-serif;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -40,15 +40,15 @@ hr {
 	text-align: center;
 }
 
-#mealList,
-#placeList {
+#meal-list,
+#place-list {
 	list-style-type: none;
 	padding: 0;
 	margin: auto;
 }
 
-.mealType, 
-.placeName {
+.meal-type, 
+.place-name {
 	margin: 12px 2px;
 	cursor: pointer;
 }
@@ -65,13 +65,11 @@ hr {
 	font-size: 16px;
 }
 
-.img-container {
+.images {
 	width: 250px;
 	height: 250px;
 }
 
-.images {
-	max-width: 100%;
-}
+
 
 

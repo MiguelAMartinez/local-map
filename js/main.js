@@ -66,6 +66,8 @@ var modelMeals = [
 /*Define important variables*/
 var selectedMeals = ['Breakfast','Lunch','Dinner'],
 	i,
+	n,
+	m,
 	aplaceName,
     currentIW,
     newIWContent,
@@ -115,7 +117,8 @@ function initMap() {
 	        }
 	    );   
 	});
-	// map.setCenter(new google.maps.LatLng(37.4419, -122.1419));	
+	// Try re-centering map?
+	map.setCenter(new google.maps.LatLng(37.4419, -122.1419));	
 }
 
 /*The meal filter and restaurant places constructors*/ 
@@ -170,6 +173,15 @@ function ViewModel() {
 	};
 }
 
+ var errorViewModel = {
+        displayImgError: ko.observable(false),
+        displayMapError: ko.observable(false) 
+    };
+
+function googleError() {
+	errorViewModel.displayMapError(true);
+}
+
 /*Change color of markers*/
 function makeMarkerIcon(markerColor) {
 	var markerImage = new google.maps.MarkerImage(
@@ -197,9 +209,28 @@ function newInfoWindow(place, infowindow) {
 	/*Message in case API request fails*/
 
 	// Option 1
+	// var flickrRequestTimeout = setTimeout(function() {
+ //    	$(".images").text("Failed to get Flickr Images");
+	// }, 5000);
+
+	// $.getJSON( flickrURL, {
+	// 		tags: place.name,
+	// 		tagmode: "any",
+	// 		format: "json"
+	// 	}).done(function( data ) {
+	// 		$.each( data.items, function( i, item ) {
+	// 			$( "<img>" ).attr( "src", item.media.m ).appendTo( ".images" );
+	// 			if ( i === 12 ) {
+	// 			  return false;
+	// 			}
+	// 		});
+	// 		clearTimeout(flickrRequestTimeout);
+	// });
+
+	// Option 2
 	var flickrRequestTimeout = setTimeout(function() {
-    	$(".images").text("Failed to get Flickr Images");
-	}, 8000);
+    	errorViewModel.displayImgError(true);
+	}, 5000);
 
 	$.getJSON( flickrURL, {
 			tags: place.name,
@@ -215,7 +246,7 @@ function newInfoWindow(place, infowindow) {
 			clearTimeout(flickrRequestTimeout);
 	});
 
-	// Option 2
+	// Option 3
 	// $.ajax({
 	// 		type: "GET",
 	// 		url: flickrURL,
@@ -234,7 +265,7 @@ function newInfoWindow(place, infowindow) {
  //    	$(".images").text("Failed to get Flickr Images");
 	// });
 
-	// Option3
+	// Option 4
 	// $.getJSON( flickrURL, {
 	// 		tags: place.name,
 	// 		tagmode: "any",
@@ -253,7 +284,7 @@ function newInfoWindow(place, infowindow) {
 
 	if (infowindow.marker != place.marker) {
 		infowindow.marker = place.marker;
-		newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><div class="img-container"><div class="images"></div></div>';
+		newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><p class="sub-infoW">Images from Flickr:</p><div class="images"><div data-bind="visible: displayImgError">Could not get images</div></div>';
 		infowindow.setContent(newIWContent);
 		currentIW = infowindow;
 		infowindow.open(map, place.marker);
@@ -266,6 +297,7 @@ function newInfoWindow(place, infowindow) {
 
 /*Update map after meal filter*/
 function updateViewList(self) {
+	// Option 1
 	self.placeList.removeAll(); 
 	modelPlaces.forEach(function(place){
 		if (place.meals[0] === selectedMeals[0]) {
@@ -281,6 +313,48 @@ function updateViewList(self) {
 			place.marker.setMap(null);
 		}
 	});
+
+	// Option 2
+	// modelPlaces.forEach(function(place){
+	// 	if (place.meals[0] === selectedMeals[0]) {
+	// 		if (typeof self.placeList[modelPlaces.indexOf(place)] === 'undefined') {
+	// 			place.marker.setMap(map);
+	// 			self.placeList.push( new constrPlace(place) );	
+	// 		} 
+	// 	} else if (place.meals[1] === selectedMeals[1]) {
+	// 		if (typeof self.placeList[modelPlaces.indexOf(place)] === 'undefined') {
+	// 			place.marker.setMap(map);
+	// 			self.placeList.push( new constrPlace(place) );	
+	// 		} 
+	// 	} else if (place.meals[2] === selectedMeals[2]) {
+	// 		if (typeof self.placeList[modelPlaces.indexOf(place)] === 'undefined') {
+	// 			place.marker.setMap(map);
+	// 			self.placeList.push( new constrPlace(place) );	
+	// 		} 
+	// 	} else {
+	// 		if (typeof self.placeList[modelPlaces.indexOf(place)] !== 'undefined') {
+	// 			place.marker.setMap(null);
+	// 			self.placeList.removeAll(place);	
+	// 		} 
+	// 	}
+	// });
+
+	// Option 3
+	// for (i = 0; i < modelPlaces.length; i++) {
+	// 	for (n = 0, n < modelPlaces.meals.length; n++) {
+	// 		for (m = 0, n < selectedMeals.length; m++) {
+	// 			if (place[i].meals[n] === selectedMeals[m]) {
+	// 				if (typeof self.placeList[modelPlaces.indexOf(place[i])] === 'undefined') {
+	// 					place[i].marker.setMap(map);
+	// 					self.placeList.push( new constrPlace(place[i]) );	
+	// 				} 
+	// 			} else {
+	// 				place[i].marker.setMap(null);
+	// 				self.placeList.removeAll([place[i]]);
+	// 			}
+	// 		}
+	// 	}
+	// }
 }
 
 ko.applyBindings(new ViewModel());

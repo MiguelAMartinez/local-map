@@ -7,27 +7,26 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
   </head>
   <body>
-
     <aside class="menu">
       <h1>Best Food in Austin</h1>
       <hr>
       <h3>Select meals:</h3>
-      <ul data-bind="foreach: mealList" id="mealList">
-        <li data-bind="text: mealName() + ' ' + filterText(), click: $parent.mealFilter" class="mealType" ></li>
+      <ul data-bind="foreach: mealList" id="meal-list">
+        <li data-bind="text: mealName() + ' ' + filterText(), click: $parent.mealFilter" class="meal-type" ></li>
       </ul>
       <hr>
       <h3>Best Places:</h3>
-      <ul data-bind="foreach: placeList" id="placeList">
-        <li data-bind="text: placeName, click: $parent.listClick" class="placeName"></li>
+      <ul data-bind="foreach: placeList" id="place-list">
+        <li data-bind="text: placeName, click: $parent.listClick" class="place-name"></li>
       </ul>
     </aside>
-    <main id="map"></main>
+    <main id="map"><div data-bind="visible: displayMapError">Error loading Google Map</div></main>
 
     <script src="js/libs/jquery.min.js"></script>
     <script src="js/libs/knockout-3.2.0.js"></script>
     <script src="js/main.js"></script>
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyATsxhPne1V5c4YCs2pbB90ke5frMlir4k&v=3&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyATsxhPne1V5c4YCs2pbB90ke5frMlir4k&v=3&callback=initMap" onerror="googleError()">
     </script>
   </body>
 </html>
