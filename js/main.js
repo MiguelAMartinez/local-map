@@ -192,7 +192,6 @@ var viewModel = {
     // displayImgError: ko.observable(false)
 };
 
-
 function googleError() {
 	viewModel.displayMapError(true);
 }
@@ -257,7 +256,6 @@ function newInfoWindow(place, infowindow) {
 
 /*Update map after meal filter*/
 function updateViewList(self) {
-	// Option 1
 	self.placeList.removeAll(); 
 	modelPlaces.forEach(function(place){
 		if (place.meals[0] === selectedMeals[0]) {
