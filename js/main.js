@@ -13,6 +13,11 @@ var modelPlaces = [
 		address: '900 E 11th St, Austin, TX',
 		meals: ['x','Lunch','x']		
 	}, {
+		name: 'La Barbecue',
+		website: 'http://labarbecue.com/',
+		address: '1906 E Cesar Chavez St, Austin, TX',
+		meals: ['x','Lunch','Dinner']	
+	}, {
 		name: 'Hopdoddy Burger Bar',
 		website: 'https://www.hopdoddy.com/',
 		address: '1400 S Congress Ave, Austin, TX',
@@ -47,6 +52,11 @@ var modelPlaces = [
 		website: 'http://eastsidecafeaustin.com',
 		address: '2113 Manor Rd, Austin, TX',
 		meals: ['x','Lunch','Dinner']
+	}, {
+		name: 'Gus Fried Chicken',
+		website: 'https://gusfriedchicken.com/',
+		address: '117 San Jacinto Blvd, Austin, TX ',
+		meals: ['x','Lunch','Dinner']	
 	}
 ];
 
@@ -75,8 +85,7 @@ var selectedMeals = ['Breakfast','Lunch','Dinner'],
     overIcon,
     map,
     flickrURL = "https://api.flickr.com/services/feeds/photos_public.gne?api_key=6eef62d5866a7d26241929bb8fd3fd46&jsoncallback=?";
-    // flickrURL = "https://api.flickr.com/services/feeds/photos_public.gne?api_key=6eef62d5866a7d26241929bb8fd3fd46";
-    // flickrURL = "https://api.flickr.com/services/feeds/photos_public.gne?api_key=jo";
+
 /*Make the first iteration of the Google map*/
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -117,8 +126,10 @@ function initMap() {
 	        }
 	    );   
 	});
-	// Try re-centering map?
-	map.setCenter(new google.maps.LatLng(37.4419, -122.1419));	
+	// TODO: Recenter map after adding pins
+	// map.setCenter(new google.maps.LatLng(38.274063, -94.763855));
+
+	ko.applyBindings(new ViewModel());	
 }
 
 /*The meal filter and restaurant places constructors*/ 
@@ -173,13 +184,17 @@ function ViewModel() {
 	};
 }
 
- var errorViewModel = {
-        displayImgError: ko.observable(false),
-        displayMapError: ko.observable(false) 
-    };
+/*Display error message in case map fails*/
+var viewModel = {
+	displayMapError: ko.observable(false)
+	// TODO: Add error message using Knockout instead of jQuery
+	// imgError: ko.observable('Could not display imagessss')
+    // displayImgError: ko.observable(false)
+};
+
 
 function googleError() {
-	errorViewModel.displayMapError(true);
+	viewModel.displayMapError(true);
 }
 
 /*Change color of markers*/
@@ -194,7 +209,6 @@ function makeMarkerIcon(markerColor) {
 	return markerImage;
 }
 
-
 /*Create new infowindow and clear previous ones
 Use Flickr API to get images about each food place*/
 function newInfoWindow(place, infowindow) {
@@ -206,85 +220,31 @@ function newInfoWindow(place, infowindow) {
     	currentIW.close();		
 	}
 
-	/*Message in case API request fails*/
-
-	// Option 1
-	// var flickrRequestTimeout = setTimeout(function() {
- //    	$(".images").text("Failed to get Flickr Images");
-	// }, 5000);
-
-	// $.getJSON( flickrURL, {
-	// 		tags: place.name,
-	// 		tagmode: "any",
-	// 		format: "json"
-	// 	}).done(function( data ) {
-	// 		$.each( data.items, function( i, item ) {
-	// 			$( "<img>" ).attr( "src", item.media.m ).appendTo( ".images" );
-	// 			if ( i === 12 ) {
-	// 			  return false;
-	// 			}
-	// 		});
-	// 		clearTimeout(flickrRequestTimeout);
-	// });
-
-	// Option 2
-	var flickrRequestTimeout = setTimeout(function() {
-    	errorViewModel.displayImgError(true);
-	}, 5000);
-
+	/*API Request*/
 	$.getJSON( flickrURL, {
 			tags: place.name,
 			tagmode: "any",
 			format: "json"
-		}).done(function( data ) {
-			$.each( data.items, function( i, item ) {
-				$( "<img>" ).attr( "src", item.media.m ).appendTo( ".images" );
-				if ( i === 12 ) {
-				  return false;
-				}
-			});
-			clearTimeout(flickrRequestTimeout);
+	}).done(function( data ) {
+		$.each( data.items, function( i, item ) {
+			$( "<img>" ).attr( "src", item.media.m ).appendTo( ".images" );
+			if ( i === 12 ) {
+			  return false;
+			}
+		});
+	}).fail(function () {
+		/*Message in case API request fails*/
+    	$(".images").text("Failed to get Flickr Images");
+
+    	// TODO: Add error message using Knockout instead of jQuery
+    	// viewModel.displayImgError(true);
 	});
-
-	// Option 3
-	// $.ajax({
-	// 		type: "GET",
-	// 		url: flickrURL,
-	// 		tags: place.name,
-	// 		dataType: "jsonp",
-	// 		tagmode: "any",
-	// 		format: "json"
-	// }).done(function( data ) {
-	// 	$.each( data.items, function( i, item ) {
-	// 		$( "<img>" ).attr( "src", item.media.m ).appendTo( ".images" );
-	// 		if ( i === 12 ) {
-	// 		  return false;
-	// 		}
-	// 	});
-	// }).fail(function () {
- //    	$(".images").text("Failed to get Flickr Images");
-	// });
-
-	// Option 4
-	// $.getJSON( flickrURL, {
-	// 		tags: place.name,
-	// 		tagmode: "any",
-	// 		format: "json"
-	// }).done(function( data ) {
-	// 	$.each( data.items, function( i, item ) {
-	// 		$( "<img>" ).attr( "src", item.media.m ).appendTo( ".images" );
-	// 		if ( i === 12 ) {
-	// 		  return false;
-	// 		}
-	// 	});
-	// }).fail(function () {
- //    	$(".images").text("Failed to get Flickr Images");
- //    	console.log('fail');
-	// });
 
 	if (infowindow.marker != place.marker) {
 		infowindow.marker = place.marker;
-		newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><p class="sub-infoW">Images from Flickr:</p><div class="images"><div data-bind="visible: displayImgError">Could not get images</div></div>';
+		// TODO: Add error message using Knockout instead of jQuery
+		// newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><p class="sub-infoW">Images from Flickr:</p><div class="images"><div data-bind="text: imgError, visible: displayImgError"></div></div>';
+		newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><p class="sub-infoW">Images from Flickr:</p><div class="images"></div>';
 		infowindow.setContent(newIWContent);
 		currentIW = infowindow;
 		infowindow.open(map, place.marker);
@@ -314,32 +274,7 @@ function updateViewList(self) {
 		}
 	});
 
-	// Option 2
-	// modelPlaces.forEach(function(place){
-	// 	if (place.meals[0] === selectedMeals[0]) {
-	// 		if (typeof self.placeList[modelPlaces.indexOf(place)] === 'undefined') {
-	// 			place.marker.setMap(map);
-	// 			self.placeList.push( new constrPlace(place) );	
-	// 		} 
-	// 	} else if (place.meals[1] === selectedMeals[1]) {
-	// 		if (typeof self.placeList[modelPlaces.indexOf(place)] === 'undefined') {
-	// 			place.marker.setMap(map);
-	// 			self.placeList.push( new constrPlace(place) );	
-	// 		} 
-	// 	} else if (place.meals[2] === selectedMeals[2]) {
-	// 		if (typeof self.placeList[modelPlaces.indexOf(place)] === 'undefined') {
-	// 			place.marker.setMap(map);
-	// 			self.placeList.push( new constrPlace(place) );	
-	// 		} 
-	// 	} else {
-	// 		if (typeof self.placeList[modelPlaces.indexOf(place)] !== 'undefined') {
-	// 			place.marker.setMap(null);
-	// 			self.placeList.removeAll(place);	
-	// 		} 
-	// 	}
-	// });
-
-	// Option 3
+	// TODO: find more sophisticated iteration, something that kind of looks like this
 	// for (i = 0; i < modelPlaces.length; i++) {
 	// 	for (n = 0, n < modelPlaces.meals.length; n++) {
 	// 		for (m = 0, n < selectedMeals.length; m++) {
@@ -356,5 +291,3 @@ function updateViewList(self) {
 	// 	}
 	// }
 }
-
-ko.applyBindings(new ViewModel());
