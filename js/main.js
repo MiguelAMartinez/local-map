@@ -90,7 +90,7 @@ var selectedMeals = ['Breakfast','Lunch','Dinner'],
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 30.274063, lng: -97.763855},
-		zoom: 13
+		zoom: 20
 	});
 
 	defaultIcon = makeMarkerIcon('fe7569');
@@ -98,6 +98,7 @@ function initMap() {
 
 	var geocoder = new google.maps.Geocoder();
 	var largeInfowindow = new google.maps.InfoWindow();
+	var bounds = new google.maps.LatLngBounds();
 
 	/*Create markers*/
 	modelPlaces.forEach(function(place){
@@ -120,15 +121,16 @@ function initMap() {
 	        			map.setZoom(14);
 			        	map.setCenter(this.getPosition());
 	    			});
+
+	    			bounds.extend(place.marker.position);
 		    	} else {
 		        	alert("Geocode was not successful for the following reason: " + status);
 		      	}
 	        }
 	    );   
 	});
-	// TODO: Recenter map after adding pins
-	// map.setCenter(new google.maps.LatLng(38.274063, -94.763855));
-
+	map.fitBounds(bounds);
+	map.setZoom(20);
 	ko.applyBindings(new ViewModel());	
 }
 
