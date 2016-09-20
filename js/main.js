@@ -187,8 +187,6 @@ function ViewModel() {
 	};
 	/*Display error message in case map fails*/
 	this.displayMapError = ko.observable(false);
-	this.imgError = ko.observable('Could not display imagessss');
-	this.displayImgError = ko.observable(false);
 }
 
 function googleError() {
@@ -232,18 +230,13 @@ function newInfoWindow(place, infowindow) {
 		});
 	}).fail(function () {
 		/*Message in case API request fails*/
+    	$(".images").text("Failed to get Flickr Images");
 
-    	// $(".images").text("Failed to get Flickr Images");
-
-    	// TODO: Add error message using Knockout instead of jQuery
-    	myViewModel.displayImgError(true);
 	});
 
 	if (infowindow.marker != place.marker) {
 		infowindow.marker = place.marker;
-		// TODO: Add error message using Knockout instead of jQuery
-		newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><p class="sub-infoW">Images from Flickr:</p><div class="images"><div data-bind="text: imgError, visible: displayImgError"></div></div>';
-		// newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><p class="sub-infoW">Images from Flickr:</p><div class="images"></div>';
+		newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><p class="sub-infoW">Images from Flickr:</p><div class="images"></div>';
 		infowindow.setContent(newIWContent);
 		currentIW = infowindow;
 		infowindow.open(map, place.marker);
