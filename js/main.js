@@ -91,7 +91,7 @@ var selectedMeals = ['Breakfast','Lunch','Dinner'],
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 30.274063, lng: -97.763855},
-		zoom: 14
+		zoom: 13
 	});
 
 	defaultIcon = makeMarkerIcon('fe7569');
@@ -107,7 +107,6 @@ function initMap() {
 			{address: place.address},
 			function(results, status) {
 		    	if (status == google.maps.GeocoderStatus.OK) {
-			        map.setCenter(results[0].geometry.location);
 			        place.marker = new google.maps.Marker({
 			            map: map,
 			            title: place.name,
@@ -124,14 +123,14 @@ function initMap() {
 	    			});
 
 	    			bounds.extend(place.marker.position);
+	    			map.fitBounds(bounds);
 		    	} else {
 		        	alert("Geocode was not successful for the following reason: " + status);
 		      	}
 	        }
 	    );   
 	});
-	map.fitBounds(bounds);
-	map.setZoom(14);
+	/*Make global variable of ViewModel()*/
 	myViewModel = new ViewModel();
 	ko.applyBindings(myViewModel);	
 }
