@@ -279,13 +279,13 @@ function updateViewList(self) {
 	// 	for (n = 0; n < mealsLength; n++) {
 	// 		for (m = 0; n < selectedMeals.length; m++) {
 	// 			if (modelPlaces[i].meals[n] === selectedMeals[m]) {
-	// 				if (typeof self.placeList[modelPlaces.indexOf(modelPlaces[i])] === 'undefined') {
+	// 				if (typeof self.placeList[i] === 'undefined') {
 	// 					modelPlaces[i].marker.setMap(map);
 	// 					self.placeList.push( new constrPlace(modelPlaces[i]) );	
 	// 				} 
 	// 			} else {
 	// 				modelPlaces[i].marker.setMap(null);
-	// 				self.placeList.removeAll([modelPlaces[i]]);
+	// 				self.placeList.removeAll([placeList[i]]);
 	// 			}
 	// 		}
 	// 	}
