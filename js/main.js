@@ -84,13 +84,14 @@ var selectedMeals = ['Breakfast','Lunch','Dinner'],
     defaultIcon,
     overIcon,
     map,
+    myViewModel,
     flickrURL = "https://api.flickr.com/services/feeds/photos_public.gne?api_key=6eef62d5866a7d26241929bb8fd3fd46&jsoncallback=?";
 
 /*Make the first iteration of the Google map*/
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 30.274063, lng: -97.763855},
-		zoom: 20
+		zoom: 14
 	});
 
 	defaultIcon = makeMarkerIcon('fe7569');
@@ -130,8 +131,9 @@ function initMap() {
 	    );   
 	});
 	map.fitBounds(bounds);
-	map.setZoom(20);
-	ko.applyBindings(new ViewModel());	
+	map.setZoom(14);
+	myViewModel = new ViewModel();
+	ko.applyBindings(myViewModel);	
 }
 
 /*The meal filter and restaurant places constructors*/ 
@@ -184,15 +186,11 @@ function ViewModel() {
 			}
 		}
 	};
+	/*Display error message in case map fails*/
+	this.displayMapError = ko.observable(false);
+	this.imgError = ko.observable('Could not display imagessss');
+	this.displayImgError = ko.observable(false);
 }
-
-/*Display error message in case map fails*/
-var viewModel = {
-	displayMapError: ko.observable(false)
-	// TODO: Add error message using Knockout instead of jQuery
-	// imgError: ko.observable('Could not display imagessss')
-    // displayImgError: ko.observable(false)
-};
 
 function googleError() {
 	viewModel.displayMapError(true);
@@ -235,17 +233,18 @@ function newInfoWindow(place, infowindow) {
 		});
 	}).fail(function () {
 		/*Message in case API request fails*/
-    	$(".images").text("Failed to get Flickr Images");
+
+    	// $(".images").text("Failed to get Flickr Images");
 
     	// TODO: Add error message using Knockout instead of jQuery
-    	// viewModel.displayImgError(true);
+    	myViewModel.displayImgError(true);
 	});
 
 	if (infowindow.marker != place.marker) {
 		infowindow.marker = place.marker;
 		// TODO: Add error message using Knockout instead of jQuery
-		// newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><p class="sub-infoW">Images from Flickr:</p><div class="images"><div data-bind="text: imgError, visible: displayImgError"></div></div>';
-		newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><p class="sub-infoW">Images from Flickr:</p><div class="images"></div>';
+		newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><p class="sub-infoW">Images from Flickr:</p><div class="images"><div data-bind="text: imgError, visible: displayImgError"></div></div>';
+		// newIWContent = '<h2 class="title-infoW">' + place.marker.title + '</h2><p class="sub-infoW">' + place.address + '</p><br><p class="sub-infoW">Images from Flickr:</p><div class="images"></div>';
 		infowindow.setContent(newIWContent);
 		currentIW = infowindow;
 		infowindow.open(map, place.marker);
@@ -276,16 +275,17 @@ function updateViewList(self) {
 
 	// TODO: find more sophisticated iteration, something that kind of looks like this
 	// for (i = 0; i < modelPlaces.length; i++) {
-	// 	for (n = 0, n < modelPlaces.meals.length; n++) {
-	// 		for (m = 0, n < selectedMeals.length; m++) {
-	// 			if (place[i].meals[n] === selectedMeals[m]) {
-	// 				if (typeof self.placeList[modelPlaces.indexOf(place[i])] === 'undefined') {
-	// 					place[i].marker.setMap(map);
-	// 					self.placeList.push( new constrPlace(place[i]) );	
+	// 	var mealsLength = modelPlaces[i].meals.length;
+	// 	for (n = 0; n < mealsLength; n++) {
+	// 		for (m = 0; n < selectedMeals.length; m++) {
+	// 			if (modelPlaces[i].meals[n] === selectedMeals[m]) {
+	// 				if (typeof self.placeList[modelPlaces.indexOf(modelPlaces[i])] === 'undefined') {
+	// 					modelPlaces[i].marker.setMap(map);
+	// 					self.placeList.push( new constrPlace(modelPlaces[i]) );	
 	// 				} 
 	// 			} else {
-	// 				place[i].marker.setMap(null);
-	// 				self.placeList.removeAll([place[i]]);
+	// 				modelPlaces[i].marker.setMap(null);
+	// 				self.placeList.removeAll([modelPlaces[i]]);
 	// 			}
 	// 		}
 	// 	}
