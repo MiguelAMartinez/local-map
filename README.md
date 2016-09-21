@@ -1,6 +1,5 @@
 # Local Map Project
-This interactive neighborhood map uses JS Knockout, Google maps, and third party APIs to show the best 
-restaurants in Austin.
+An interactive map that uses Knockout.js, jQuery, and third party APIs (Google Maps and Flickr) to show the best local food places.
 
 ## Using the map
 Select (by marking with an [X]) the meals (Breakfast, Lunch, or Dinner) you want. The map will display the
