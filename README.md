@@ -7,6 +7,6 @@ restaurants that offer those meals. Click on a restaurant name on the list or in
 and images of the food of that restaurant. 
  
 ## View the Local Map Application
-Open the local map web application [here](https://miguelamartinez.github.io/local-map-project/).
+Open the local map web application [here](https://miguelamartinez.github.io/local-map/).
 Alternatively, download the application files and open the `index.html` file.
  
